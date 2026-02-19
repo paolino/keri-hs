@@ -2,15 +2,14 @@ module Keri.Kel.Append
     ( append
     ) where
 
-{- |
-Module      : Keri.Kel.Append
-Description : Append events to a KEL
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Appends a signed event to a KEL after verifying
-signatures and chain integrity.
--}
+-- \|
+-- Module      : Keri.Kel.Append
+-- Description : Append events to a KEL
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Appends a signed event to a KEL after verifying
+-- signatures and chain integrity.
 
 import Keri.Event
     ( Event (..)
@@ -30,7 +29,7 @@ import Keri.KeyState.Verify (verifySignatures)
 -}
 append
     :: Kel -> SignedEvent -> Either String Kel
-append kel@(Kel events) se@SignedEvent{..} =
+append kel@(Kel events) se =
     case events of
         [] -> appendInception se
         _ -> appendToExisting kel se

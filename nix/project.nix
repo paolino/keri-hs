@@ -9,9 +9,7 @@ let
       tools = {
         cabal = { index-state = indexState; };
         cabal-fmt = { index-state = indexState; };
-        haskell-language-server = {
-          index-state = indexState;
-        };
+        haskell-language-server = { index-state = indexState; };
         hoogle = { index-state = indexState; };
         fourmolu = { index-state = indexState; };
         hlint = { index-state = indexState; };

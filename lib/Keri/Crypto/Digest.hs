@@ -3,17 +3,16 @@ module Keri.Crypto.Digest
     , saidPlaceholder
     ) where
 
-{- |
-Module      : Keri.Crypto.Digest
-Description : SAID (Self-Addressing Identifier) computation
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Computes Self-Addressing Identifiers by hashing
-serialized event data and CESR-encoding the digest.
-The placeholder is 44 @#@ characters (matching a
-1-char-code 32-byte CESR primitive).
--}
+-- \|
+-- Module      : Keri.Crypto.Digest
+-- Description : SAID (Self-Addressing Identifier) computation
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Computes Self-Addressing Identifiers by hashing
+-- serialized event data and CESR-encoding the digest.
+-- The placeholder is 44 @#@ characters (matching a
+-- 1-char-code 32-byte CESR primitive).
 
 import Data.ByteString (ByteString)
 import Data.Text (Text)

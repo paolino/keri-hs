@@ -3,23 +3,22 @@ module Keri.KeyState.PreRotation
     , verifyCommitment
     ) where
 
-{- |
-Module      : Keri.KeyState.PreRotation
-Description : Pre-rotation key commitment
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Implements simplified pre-rotation: each next-key
-commitment is the CESR-encoded hash of the public
-key bytes. During rotation, the revealed public key
-is hashed and compared against the commitment.
--}
+-- \|
+-- Module      : Keri.KeyState.PreRotation
+-- Description : Pre-rotation key commitment
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Implements simplified pre-rotation: each next-key
+-- commitment is the CESR-encoded hash of the public
+-- key bytes. During rotation, the revealed public key
+-- is hashed and compared against the commitment.
 
 import Data.Text (Text)
+import Keri.Cesr.Decode qualified as Cesr
 import Keri.Cesr.DerivationCode
     ( DerivationCode (Blake2bDigest)
     )
-import Keri.Cesr.Decode qualified as Cesr
 import Keri.Cesr.Encode qualified as Cesr
 import Keri.Cesr.Primitive (Primitive (..))
 import Keri.Crypto.Blake3 qualified as Blake3

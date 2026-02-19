@@ -3,16 +3,15 @@ module Keri.Event.Rotation
     , mkRotation
     ) where
 
-{- |
-Module      : Keri.Event.Rotation
-Description : Rotation event construction
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Constructs rotation events with computed SAID and
-version string. Rotation changes the current signing
-keys and establishes new pre-rotation commitments.
--}
+-- \|
+-- Module      : Keri.Event.Rotation
+-- Description : Rotation event construction
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Constructs rotation events with computed SAID and
+-- version string. Rotation changes the current signing
+-- keys and establishes new pre-rotation commitments.
 
 import Data.Aeson (Value)
 import Data.ByteString qualified as BS
@@ -33,15 +32,15 @@ import Keri.Event.Version
 
 -- | Configuration for creating a rotation event.
 data RotationConfig = RotationConfig
-    { prefix :: Text
-    , sequenceNumber :: Int
-    , priorDigest :: Text
-    , keys :: [Text]
-    , signingThreshold :: Int
-    , nextKeys :: [Text]
-    , nextThreshold :: Int
-    , config :: [Text]
-    , anchors :: [Value]
+    { rcPrefix :: Text
+    , rcSequenceNumber :: Int
+    , rcPriorDigest :: Text
+    , rcKeys :: [Text]
+    , rcSigningThreshold :: Int
+    , rcNextKeys :: [Text]
+    , rcNextThreshold :: Int
+    , rcConfig :: [Text]
+    , rcAnchors :: [Value]
     }
     deriving stock (Show, Eq)
 
@@ -49,38 +48,24 @@ data RotationConfig = RotationConfig
 string size and SAID automatically.
 -}
 mkRotation :: RotationConfig -> Event
-mkRotation cfg = Rotation finalData
+mkRotation RotationConfig{..} = Rotation finalData
   where
     placeholder =
         RotationData
             { version = versionPlaceholder
             , digest = saidPlaceholder
-            , prefix =
-                prefix (cfg :: RotationConfig)
-            , sequenceNumber =
-                sequenceNumber
-                    (cfg :: RotationConfig)
-            , priorDigest =
-                priorDigest
-                    (cfg :: RotationConfig)
-            , signingThreshold =
-                signingThreshold
-                    (cfg :: RotationConfig)
-            , keys =
-                keys (cfg :: RotationConfig)
-            , nextThreshold =
-                nextThreshold
-                    (cfg :: RotationConfig)
-            , nextKeys =
-                nextKeys
-                    (cfg :: RotationConfig)
+            , prefix = rcPrefix
+            , sequenceNumber = rcSequenceNumber
+            , priorDigest = rcPriorDigest
+            , signingThreshold = rcSigningThreshold
+            , keys = rcKeys
+            , nextThreshold = rcNextThreshold
+            , nextKeys = rcNextKeys
             , witnessThreshold = 0
             , witnessesRemoved = []
             , witnessesAdded = []
-            , config =
-                config (cfg :: RotationConfig)
-            , anchors =
-                anchors (cfg :: RotationConfig)
+            , config = rcConfig
+            , anchors = rcAnchors
             }
     size0 =
         BS.length $

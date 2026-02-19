@@ -33,14 +33,38 @@ spec = do
                     "DKxy2sgzfplyr-tgwIxS19f2OchFHtLwPWD3v4oYimBx"
                 expected =
                     BS.pack
-                        [ 0xac, 0x72, 0xda, 0xc8
-                        , 0x33, 0x7e, 0x99, 0x72
-                        , 0xaf, 0xeb, 0x60, 0xc0
-                        , 0x8c, 0x52, 0xd7, 0xd7
-                        , 0xf6, 0x39, 0xc8, 0x45
-                        , 0x1e, 0xd2, 0xf0, 0x3d
-                        , 0x60, 0xf7, 0xbf, 0x8a
-                        , 0x18, 0x8a, 0x60, 0x71
+                        [ 0xac
+                        , 0x72
+                        , 0xda
+                        , 0xc8
+                        , 0x33
+                        , 0x7e
+                        , 0x99
+                        , 0x72
+                        , 0xaf
+                        , 0xeb
+                        , 0x60
+                        , 0xc0
+                        , 0x8c
+                        , 0x52
+                        , 0xd7
+                        , 0xd7
+                        , 0xf6
+                        , 0x39
+                        , 0xc8
+                        , 0x45
+                        , 0x1e
+                        , 0xd2
+                        , 0xf0
+                        , 0x3d
+                        , 0x60
+                        , 0xf7
+                        , 0xbf
+                        , 0x8a
+                        , 0x18
+                        , 0x8a
+                        , 0x60
+                        , 0x71
                         ]
             case decode qb64 of
                 Left err -> expectationFailure err

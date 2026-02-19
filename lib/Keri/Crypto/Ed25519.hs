@@ -11,15 +11,14 @@ module Keri.Crypto.Ed25519
     , signatureFromBytes
     ) where
 
-{- |
-Module      : Keri.Crypto.Ed25519
-Description : Ed25519 key operations
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Ed25519 key generation, signing, and verification
-using the @crypton@ library.
--}
+-- \|
+-- Module      : Keri.Crypto.Ed25519
+-- Description : Ed25519 key operations
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Ed25519 key generation, signing, and verification
+-- using the @crypton@ library.
 
 import Crypto.Error (CryptoFailable (..))
 import Crypto.PubKey.Ed25519 qualified as Ed

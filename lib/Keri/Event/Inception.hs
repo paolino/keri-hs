@@ -3,16 +3,15 @@ module Keri.Event.Inception
     , mkInception
     ) where
 
-{- |
-Module      : Keri.Event.Inception
-Description : Inception event construction
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Constructs inception events with computed SAID
-and version string. The prefix of an inception event
-equals its SAID (self-addressing identifier).
--}
+-- \|
+-- Module      : Keri.Event.Inception
+-- Description : Inception event construction
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Constructs inception events with computed SAID
+-- and version string. The prefix of an inception event
+-- equals its SAID (self-addressing identifier).
 
 import Data.Aeson (Value)
 import Data.ByteString qualified as BS
@@ -33,12 +32,12 @@ import Keri.Event.Version
 
 -- | Configuration for creating an inception event.
 data InceptionConfig = InceptionConfig
-    { keys :: [Text]
-    , signingThreshold :: Int
-    , nextKeys :: [Text]
-    , nextThreshold :: Int
-    , config :: [Text]
-    , anchors :: [Value]
+    { icKeys :: [Text]
+    , icSigningThreshold :: Int
+    , icNextKeys :: [Text]
+    , icNextThreshold :: Int
+    , icConfig :: [Text]
+    , icAnchors :: [Value]
     }
     deriving stock (Show, Eq)
 
@@ -47,7 +46,8 @@ string size and SAID automatically. The prefix @i@ is
 set equal to the SAID @d@ (self-addressing).
 -}
 mkInception :: InceptionConfig -> Event
-mkInception cfg = Inception finalData
+mkInception InceptionConfig{..} =
+    Inception finalData
   where
     placeholder =
         InceptionData
@@ -55,23 +55,14 @@ mkInception cfg = Inception finalData
             , digest = saidPlaceholder
             , prefix = saidPlaceholder
             , sequenceNumber = 0
-            , signingThreshold =
-                signingThreshold
-                    (cfg :: InceptionConfig)
-            , keys =
-                keys (cfg :: InceptionConfig)
-            , nextThreshold =
-                nextThreshold
-                    (cfg :: InceptionConfig)
-            , nextKeys =
-                nextKeys
-                    (cfg :: InceptionConfig)
+            , signingThreshold = icSigningThreshold
+            , keys = icKeys
+            , nextThreshold = icNextThreshold
+            , nextKeys = icNextKeys
             , witnessThreshold = 0
             , witnesses = []
-            , config =
-                config (cfg :: InceptionConfig)
-            , anchors =
-                anchors (cfg :: InceptionConfig)
+            , config = icConfig
+            , anchors = icAnchors
             }
     size0 =
         BS.length $

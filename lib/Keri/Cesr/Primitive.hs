@@ -3,16 +3,15 @@ module Keri.Cesr.Primitive
     , mkPrimitive
     ) where
 
-{- |
-Module      : Keri.Cesr.Primitive
-Description : Qualified cryptographic primitive
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-A 'Primitive' pairs a 'DerivationCode' with raw bytes,
-representing a qualified cryptographic value (public key,
-digest, or signature).
--}
+-- \|
+-- Module      : Keri.Cesr.Primitive
+-- Description : Qualified cryptographic primitive
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- A 'Primitive' pairs a 'DerivationCode' with raw bytes,
+-- representing a qualified cryptographic value (public key,
+-- digest, or signature).
 
 import Data.ByteString (ByteString)
 import Data.ByteString qualified as BS

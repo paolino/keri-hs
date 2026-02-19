@@ -1,22 +1,21 @@
-cabal-version: 3.0
-name:          keri-hs
-version:       0.1.0.0
-synopsis:      KERI (Key Event Receipt Infrastructure) library
+cabal-version:   3.0
+name:            keri-hs
+version:         0.1.0.0
+synopsis:        KERI (Key Event Receipt Infrastructure) library
 description:
   A learning-oriented Haskell implementation of the KERI
   decentralized identity protocol, supporting Ed25519
   cryptography, CESR encoding, and direct-mode key event
   log management.
 
-license:       Apache-2.0
-license-file:  LICENSE
-copyright:     (c) 2026 Cardano Foundation
-author:        Paolo Veronelli
-maintainer:    paolo.veronelli@gmail.com
-category:      Cryptography
-build-type:    Simple
-extra-doc-files:
-  README.md
+license:         Apache-2.0
+license-file:    LICENSE
+copyright:       (c) 2026 Cardano Foundation
+author:          Paolo Veronelli
+maintainer:      paolo.veronelli@gmail.com
+category:        Cryptography
+build-type:      Simple
+extra-doc-files: README.md
 
 common language
   default-language:   GHC2021
@@ -31,14 +30,12 @@ common language
 common opts-lib
   ghc-options:
     -Wall -Werror -Wunused-imports -Wunused-packages
-    -Wmissing-export-lists -Wname-shadowing
-    -Wredundant-constraints
+    -Wmissing-export-lists -Wname-shadowing -Wredundant-constraints
 
 common opts-exe
   ghc-options:
     -Wall -Werror -Wunused-imports -Wunused-packages
-    -Wmissing-export-lists -threaded -rtsopts
-    "-with-rtsopts=-N"
+    -Wmissing-export-lists -threaded -rtsopts -with-rtsopts=-N
 
 library
   import:          language, opts-lib
@@ -73,24 +70,22 @@ library
     , base               >=4.18 && <5
     , base64-bytestring  >=1.2  && <1.3
     , bytestring         >=0.11 && <0.13
-    , containers         >=0.6  && <0.8
     , crypton            >=0.34 && <2
     , memory             >=0.16 && <1
     , text               >=2.0  && <2.2
-    , vector             >=0.13 && <0.14
 
 executable keri-cli
   import:         language, opts-exe
   hs-source-dirs: app/cli
   main-is:        Main.hs
   build-depends:
-    , aeson
     , base
+    , base64-bytestring
     , bytestring
-    , directory              >=1.3 && <1.5
-    , filepath               >=1.4 && <1.6
+    , directory             >=1.3  && <1.5
+    , filepath              >=1.4  && <1.6
     , keri-hs
-    , optparse-applicative   >=0.17 && <0.19
+    , optparse-applicative  >=0.17 && <0.19
     , text
 
 executable keri-demo
@@ -98,21 +93,19 @@ executable keri-demo
   hs-source-dirs: app/demo
   main-is:        Main.hs
   build-depends:
-    , aeson
-    , async            >=2.2 && <2.3
+    , async           >=2.2 && <2.3
     , base
     , bytestring
     , keri-hs
-    , network          >=3.1 && <3.3
-    , network-simple   >=0.4 && <0.5
+    , network-simple  >=0.4 && <0.5
     , text
 
 test-suite unit-tests
-  import:         language, opts-lib
-  type:           exitcode-stdio-1.0
-  hs-source-dirs: test/spec
-  main-is:        Main.hs
-  ghc-options:    -threaded -rtsopts "-with-rtsopts=-N"
+  import:             language, opts-lib
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test/spec
+  main-is:            Main.hs
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
   other-modules:
     Keri.Cesr.DecodeSpec
     Keri.Cesr.DerivationCodeSpec
@@ -130,7 +123,6 @@ test-suite unit-tests
     Keri.KeyStateSpec
 
   build-depends:
-    , aeson
     , base
     , bytestring
     , hspec       >=2.10 && <3
@@ -138,5 +130,4 @@ test-suite unit-tests
     , QuickCheck  >=2.14 && <3
     , text
 
-  build-tool-depends:
-    hspec-discover:hspec-discover
+  build-tool-depends: hspec-discover:hspec-discover

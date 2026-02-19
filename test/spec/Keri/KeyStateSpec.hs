@@ -18,10 +18,10 @@ spec = do
         it "sets prefix from inception" $ do
             (_, evt) <- mkTestInception
             case evt of
-                Inception d -> do
+                Inception d@InceptionData{prefix} -> do
                     let ks = initialState d
                     statePrefix ks
-                        `shouldBe` prefix d
+                        `shouldBe` prefix
                 _ ->
                     expectationFailure "not inception"
 
@@ -105,12 +105,12 @@ mkTestInception = do
             commitKey nextPubCesr
     let cfg =
             InceptionConfig
-                { keys = [pubCesr]
-                , signingThreshold = 1
-                , nextKeys = [nextCommit]
-                , nextThreshold = 1
-                , config = []
-                , anchors = []
+                { icKeys = [pubCesr]
+                , icSigningThreshold = 1
+                , icNextKeys = [nextCommit]
+                , icNextThreshold = 1
+                , icConfig = []
+                , icAnchors = []
                 }
     pure (nextKp, mkInception cfg)
 
@@ -124,17 +124,17 @@ mkTestRotation nextKp ks = do
             commitKey newNextCesr
     let cfg =
             RotationConfig
-                { prefix = statePrefix ks
-                , sequenceNumber =
+                { rcPrefix = statePrefix ks
+                , rcSequenceNumber =
                     stateSequenceNumber ks + 1
-                , priorDigest =
+                , rcPriorDigest =
                     stateLastDigest ks
-                , keys = [encodeKey nextKp]
-                , signingThreshold = 1
-                , nextKeys = [newNextCommit]
-                , nextThreshold = 1
-                , config = []
-                , anchors = []
+                , rcKeys = [encodeKey nextKp]
+                , rcSigningThreshold = 1
+                , rcNextKeys = [newNextCommit]
+                , rcNextThreshold = 1
+                , rcConfig = []
+                , rcAnchors = []
                 }
     pure (mkRotation cfg)
 
