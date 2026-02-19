@@ -3,6 +3,8 @@
 A learning-oriented Haskell implementation of [KERI](https://keri.one/)
 (Key Event Receipt Infrastructure).
 
+**[Documentation](https://paolino.github.io/keri-hs/)**
+
 ## Scope
 
 - Ed25519 only (no secp256k1)
@@ -25,11 +27,10 @@ nix develop -c just unit
 ## CLI
 
 ```bash
-nix develop -c cabal run keri-cli -- init
-nix develop -c cabal run keri-cli -- show
-nix develop -c cabal run keri-cli -- rotate
-nix develop -c cabal run keri-cli -- sign "hello"
-nix develop -c cabal run keri-cli -- export
+nix run .#keri-cli -- init
+nix run .#keri-cli -- show
+nix run .#keri-cli -- sign "hello"
+nix run .#keri-cli -- export
 ```
 
 ## Direct Mode Demo
