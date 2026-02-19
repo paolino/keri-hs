@@ -39,6 +39,16 @@ unit match="":
             --test-option="{{ match }}"
     fi
 
+# Serve docs locally
+docs-serve:
+    #!/usr/bin/env bash
+    nix develop github:paolino/dev-assets?dir=mkdocs -c mkdocs serve
+
+# Build docs
+docs-build:
+    #!/usr/bin/env bash
+    nix develop github:paolino/dev-assets?dir=mkdocs -c mkdocs build
+
 # Full CI pipeline
 CI:
     #!/usr/bin/env bash
