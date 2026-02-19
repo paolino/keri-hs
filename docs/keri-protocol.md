@@ -427,11 +427,11 @@ quadrantChart
     quadrant-3 Simple but Limited
     quadrant-4 Decentralized but Limited
     Traditional PKI: [0.10, 0.30]
-    did:web: [0.20, 0.25]
-    did:key: [0.85, 0.10]
-    did:ethr: [0.60, 0.50]
-    did:ion: [0.65, 0.55]
-    did:peer: [0.80, 0.20]
+    did-web: [0.20, 0.25]
+    did-key: [0.85, 0.10]
+    did-ethr: [0.60, 0.50]
+    did-ion: [0.65, 0.55]
+    did-peer: [0.80, 0.20]
     KERI: [0.88, 0.92]
 ```
 
