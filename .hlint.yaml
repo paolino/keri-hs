@@ -1,0 +1,7 @@
+- arguments:
+    - -XOverloadedStrings
+    - -XLambdaCase
+    - -XDerivingStrategies
+
+- ignore: { name: "Use newtype instead of data" }
+- ignore: { name: "Redundant bracket" }
