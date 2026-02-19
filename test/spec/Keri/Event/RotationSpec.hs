@@ -11,15 +11,15 @@ spec = do
         it "creates a rotation event" $ do
             let cfg =
                     RotationConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 1
-                        , priorDigest = "Eprior"
-                        , keys = ["Dkey1"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Enext1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { rcPrefix = "Eprefix"
+                        , rcSequenceNumber = 1
+                        , rcPriorDigest = "Eprior"
+                        , rcKeys = ["Dkey1"]
+                        , rcSigningThreshold = 1
+                        , rcNextKeys = ["Enext1"]
+                        , rcNextThreshold = 1
+                        , rcConfig = []
+                        , rcAnchors = []
                         }
                 evt = mkRotation cfg
             eventType evt `shouldBe` Rot
@@ -27,15 +27,15 @@ spec = do
         it "preserves prefix" $ do
             let cfg =
                     RotationConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 1
-                        , priorDigest = "Eprior"
-                        , keys = ["Dkey1"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Enext1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { rcPrefix = "Eprefix"
+                        , rcSequenceNumber = 1
+                        , rcPriorDigest = "Eprior"
+                        , rcKeys = ["Dkey1"]
+                        , rcSigningThreshold = 1
+                        , rcNextKeys = ["Enext1"]
+                        , rcNextThreshold = 1
+                        , rcConfig = []
+                        , rcAnchors = []
                         }
                 evt = mkRotation cfg
             eventPrefix evt `shouldBe` "Eprefix"
@@ -43,15 +43,15 @@ spec = do
         it "SAID differs from prefix" $ do
             let cfg =
                     RotationConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 1
-                        , priorDigest = "Eprior"
-                        , keys = ["Dkey1"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Enext1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { rcPrefix = "Eprefix"
+                        , rcSequenceNumber = 1
+                        , rcPriorDigest = "Eprior"
+                        , rcKeys = ["Dkey1"]
+                        , rcSigningThreshold = 1
+                        , rcNextKeys = ["Enext1"]
+                        , rcNextThreshold = 1
+                        , rcConfig = []
+                        , rcAnchors = []
                         }
                 evt = mkRotation cfg
             eventDigest evt `shouldNotBe` "Eprefix"
@@ -59,15 +59,15 @@ spec = do
         it "SAID starts with E" $ do
             let cfg =
                     RotationConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 1
-                        , priorDigest = "Eprior"
-                        , keys = ["Dkey1"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Enext1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { rcPrefix = "Eprefix"
+                        , rcSequenceNumber = 1
+                        , rcPriorDigest = "Eprior"
+                        , rcKeys = ["Dkey1"]
+                        , rcSigningThreshold = 1
+                        , rcNextKeys = ["Enext1"]
+                        , rcNextThreshold = 1
+                        , rcConfig = []
+                        , rcAnchors = []
                         }
                 evt = mkRotation cfg
             T.take 1 (eventDigest evt)

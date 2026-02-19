@@ -12,12 +12,12 @@ spec = do
         it "creates an inception event" $ do
             let cfg =
                     InceptionConfig
-                        { keys = ["Dkey123"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Edigest1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { icKeys = ["Dkey123"]
+                        , icSigningThreshold = 1
+                        , icNextKeys = ["Edigest1"]
+                        , icNextThreshold = 1
+                        , icConfig = []
+                        , icAnchors = []
                         }
                 evt = mkInception cfg
             eventType evt `shouldBe` Icp
@@ -25,12 +25,12 @@ spec = do
         it "sets prefix equal to digest" $ do
             let cfg =
                     InceptionConfig
-                        { keys = ["Dkey123"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Edigest1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { icKeys = ["Dkey123"]
+                        , icSigningThreshold = 1
+                        , icNextKeys = ["Edigest1"]
+                        , icNextThreshold = 1
+                        , icConfig = []
+                        , icAnchors = []
                         }
                 evt = mkInception cfg
             eventPrefix evt
@@ -39,12 +39,12 @@ spec = do
         it "sets sequence number to 0" $ do
             let cfg =
                     InceptionConfig
-                        { keys = ["Dkey123"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Edigest1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { icKeys = ["Dkey123"]
+                        , icSigningThreshold = 1
+                        , icNextKeys = ["Edigest1"]
+                        , icNextThreshold = 1
+                        , icConfig = []
+                        , icAnchors = []
                         }
                 evt = mkInception cfg
             eventSequenceNumber evt `shouldBe` 0
@@ -52,12 +52,12 @@ spec = do
         it "SAID is not placeholder" $ do
             let cfg =
                     InceptionConfig
-                        { keys = ["Dkey123"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Edigest1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { icKeys = ["Dkey123"]
+                        , icSigningThreshold = 1
+                        , icNextKeys = ["Edigest1"]
+                        , icNextThreshold = 1
+                        , icConfig = []
+                        , icAnchors = []
                         }
                 evt = mkInception cfg
                 said = eventDigest evt
@@ -66,12 +66,12 @@ spec = do
         it "SAID starts with E (digest code)" $ do
             let cfg =
                     InceptionConfig
-                        { keys = ["Dkey123"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Edigest1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { icKeys = ["Dkey123"]
+                        , icSigningThreshold = 1
+                        , icNextKeys = ["Edigest1"]
+                        , icNextThreshold = 1
+                        , icConfig = []
+                        , icAnchors = []
                         }
                 evt = mkInception cfg
             T.take 1 (eventDigest evt)
@@ -80,14 +80,17 @@ spec = do
         it "version has correct size" $ do
             let cfg =
                     InceptionConfig
-                        { keys = ["Dkey123"]
-                        , signingThreshold = 1
-                        , nextKeys = ["Edigest1"]
-                        , nextThreshold = 1
-                        , config = []
-                        , anchors = []
+                        { icKeys = ["Dkey123"]
+                        , icSigningThreshold = 1
+                        , icNextKeys = ["Edigest1"]
+                        , icNextThreshold = 1
+                        , icConfig = []
+                        , icAnchors = []
                         }
-                Inception d = mkInception cfg
-                v = version (d :: InceptionData)
-            parseVersionSize v
-                `shouldSatisfy` maybe False (> 0)
+                evt = mkInception cfg
+            case evt of
+                Inception InceptionData{version = v} ->
+                    parseVersionSize v
+                        `shouldSatisfy` maybe False (> 0)
+                _ ->
+                    expectationFailure "not inception"

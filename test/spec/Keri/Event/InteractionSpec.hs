@@ -11,10 +11,10 @@ spec = do
         it "creates an interaction event" $ do
             let cfg =
                     InteractionConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 2
-                        , priorDigest = "Eprior"
-                        , anchors = []
+                        { ixPrefix = "Eprefix"
+                        , ixSequenceNumber = 2
+                        , ixPriorDigest = "Eprior"
+                        , ixAnchors = []
                         }
                 evt = mkInteraction cfg
             eventType evt `shouldBe` Ixn
@@ -22,10 +22,10 @@ spec = do
         it "preserves prefix" $ do
             let cfg =
                     InteractionConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 2
-                        , priorDigest = "Eprior"
-                        , anchors = []
+                        { ixPrefix = "Eprefix"
+                        , ixSequenceNumber = 2
+                        , ixPriorDigest = "Eprior"
+                        , ixAnchors = []
                         }
                 evt = mkInteraction cfg
             eventPrefix evt `shouldBe` "Eprefix"
@@ -33,10 +33,10 @@ spec = do
         it "SAID starts with E" $ do
             let cfg =
                     InteractionConfig
-                        { prefix = "Eprefix"
-                        , sequenceNumber = 2
-                        , priorDigest = "Eprior"
-                        , anchors = []
+                        { ixPrefix = "Eprefix"
+                        , ixSequenceNumber = 2
+                        , ixPriorDigest = "Eprior"
+                        , ixAnchors = []
                         }
                 evt = mkInteraction cfg
             T.take 1 (eventDigest evt)

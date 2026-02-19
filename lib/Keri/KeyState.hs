@@ -4,16 +4,15 @@ module Keri.KeyState
     , applyEvent
     ) where
 
-{- |
-Module      : Keri.KeyState
-Description : Key state machine
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Maintains the key state derived from processing KERI
-events. The state tracks current keys, next-key
-commitments, thresholds, and the last event digest.
--}
+-- \|
+-- Module      : Keri.KeyState
+-- Description : Key state machine
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Maintains the key state derived from processing KERI
+-- events. The state tracks current keys, next-key
+-- commitments, thresholds, and the last event digest.
 
 import Data.Text (Text)
 import Keri.Event
@@ -41,21 +40,18 @@ data KeyState = KeyState
 
 -- | Derive initial key state from an inception event.
 initialState :: InceptionData -> KeyState
-initialState d =
+initialState InceptionData{..} =
     KeyState
-        { statePrefix = prefix d
-        , stateSequenceNumber =
-            sequenceNumber d
-        , stateLastDigest = digest d
-        , stateSigningThreshold =
-            signingThreshold d
-        , stateKeys = keys d
-        , stateNextThreshold = nextThreshold d
-        , stateNextKeys = nextKeys d
-        , stateWitnessThreshold =
-            witnessThreshold d
-        , stateWitnesses = witnesses d
-        , stateConfig = config d
+        { statePrefix = prefix
+        , stateSequenceNumber = sequenceNumber
+        , stateLastDigest = digest
+        , stateSigningThreshold = signingThreshold
+        , stateKeys = keys
+        , stateNextThreshold = nextThreshold
+        , stateNextKeys = nextKeys
+        , stateWitnessThreshold = witnessThreshold
+        , stateWitnesses = witnesses
+        , stateConfig = config
         }
 
 {- | Apply an event to the current key state,
@@ -75,39 +71,34 @@ applyRotation
     :: KeyState
     -> RotationData
     -> Either String KeyState
-applyRotation ks d = do
-    checkPrefix ks (prefix d)
-    checkSequence ks (sequenceNumber d)
-    checkPrior ks (priorDigest d)
-    verifyPreRotation
-        (stateNextKeys ks)
-        (keys d)
+applyRotation ks RotationData{..} = do
+    checkPrefix ks prefix
+    checkSequence ks sequenceNumber
+    checkPrior ks priorDigest
+    verifyPreRotation (stateNextKeys ks) keys
     Right
         ks
-            { stateSequenceNumber =
-                sequenceNumber d
-            , stateLastDigest = digest d
+            { stateSequenceNumber = sequenceNumber
+            , stateLastDigest = digest
             , stateSigningThreshold =
-                signingThreshold d
-            , stateKeys = keys d
-            , stateNextThreshold =
-                nextThreshold d
-            , stateNextKeys = nextKeys d
+                signingThreshold
+            , stateKeys = keys
+            , stateNextThreshold = nextThreshold
+            , stateNextKeys = nextKeys
             }
 
 applyInteraction
     :: KeyState
     -> InteractionData
     -> Either String KeyState
-applyInteraction ks d = do
-    checkPrefix ks (prefix d)
-    checkSequence ks (sequenceNumber d)
-    checkPrior ks (priorDigest d)
+applyInteraction ks InteractionData{..} = do
+    checkPrefix ks prefix
+    checkSequence ks sequenceNumber
+    checkPrior ks priorDigest
     Right
         ks
-            { stateSequenceNumber =
-                sequenceNumber d
-            , stateLastDigest = digest d
+            { stateSequenceNumber = sequenceNumber
+            , stateLastDigest = digest
             }
 
 checkPrefix :: KeyState -> Text -> Either String ()

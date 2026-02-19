@@ -1,7 +1,6 @@
 module Keri.Event.SerializeSpec (spec) where
 
 import Data.ByteString qualified as BS
-import Data.ByteString.Char8 qualified as BS8
 import Keri.Event
 import Keri.Event.Serialize
 import Test.Hspec
@@ -86,5 +85,5 @@ containsStr needle haystack =
 fieldPos :: BS.ByteString -> BS.ByteString -> Int
 fieldPos field bs =
     let key = "\"" <> field <> "\""
-        (before, _) = BS.breakSubstring key bs
-    in BS.length before
+        (prefix, _) = BS.breakSubstring key bs
+    in  BS.length prefix

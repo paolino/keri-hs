@@ -3,16 +3,15 @@ module Keri.Event.Interaction
     , mkInteraction
     ) where
 
-{- |
-Module      : Keri.Event.Interaction
-Description : Interaction event construction
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Constructs interaction events with computed SAID and
-version string. Interactions anchor data without
-changing keys.
--}
+-- \|
+-- Module      : Keri.Event.Interaction
+-- Description : Interaction event construction
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Constructs interaction events with computed SAID and
+-- version string. Interactions anchor data without
+-- changing keys.
 
 import Data.Aeson (Value)
 import Data.ByteString qualified as BS
@@ -33,10 +32,10 @@ import Keri.Event.Version
 
 -- | Configuration for creating an interaction event.
 data InteractionConfig = InteractionConfig
-    { prefix :: Text
-    , sequenceNumber :: Int
-    , priorDigest :: Text
-    , anchors :: [Value]
+    { ixPrefix :: Text
+    , ixSequenceNumber :: Int
+    , ixPriorDigest :: Text
+    , ixAnchors :: [Value]
     }
     deriving stock (Show, Eq)
 
@@ -44,29 +43,21 @@ data InteractionConfig = InteractionConfig
 string size and SAID automatically.
 -}
 mkInteraction :: InteractionConfig -> Event
-mkInteraction cfg = Interaction finalData
+mkInteraction InteractionConfig{..} =
+    Interaction finalData
   where
     placeholder =
         InteractionData
             { version = versionPlaceholder
             , digest = saidPlaceholder
-            , prefix =
-                prefix
-                    (cfg :: InteractionConfig)
-            , sequenceNumber =
-                sequenceNumber
-                    (cfg :: InteractionConfig)
-            , priorDigest =
-                priorDigest
-                    (cfg :: InteractionConfig)
-            , anchors =
-                anchors
-                    (cfg :: InteractionConfig)
+            , prefix = ixPrefix
+            , sequenceNumber = ixSequenceNumber
+            , priorDigest = ixPriorDigest
+            , anchors = ixAnchors
             }
     size0 =
         BS.length $
-            serializeEvent
-                (Interaction placeholder)
+            serializeEvent (Interaction placeholder)
     realVersion = mkVersion size0
     withVersion =
         placeholder{version = realVersion}

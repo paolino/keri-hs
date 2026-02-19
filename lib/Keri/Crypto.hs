@@ -4,14 +4,13 @@ module Keri.Crypto
     , module Keri.Crypto.Digest
     ) where
 
-{- |
-Module      : Keri.Crypto
-Description : Cryptographic operations re-exports
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Re-exports all cryptographic modules.
--}
+-- \|
+-- Module      : Keri.Crypto
+-- Description : Cryptographic operations re-exports
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Re-exports all cryptographic modules.
 
 import Keri.Crypto.Blake3
 import Keri.Crypto.Digest

@@ -4,15 +4,14 @@ module Keri.Kel
     , emptyKel
     ) where
 
-{- |
-Module      : Keri.Kel
-Description : Key Event Log types
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-A Key Event Log (KEL) is an ordered sequence of signed
-events forming the verifiable history of an identifier.
--}
+-- \|
+-- Module      : Keri.Kel
+-- Description : Key Event Log types
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- A Key Event Log (KEL) is an ordered sequence of signed
+-- events forming the verifiable history of an identifier.
 
 import Data.Text (Text)
 import Keri.Event (Event)

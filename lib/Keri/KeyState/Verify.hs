@@ -3,15 +3,14 @@ module Keri.KeyState.Verify
     , IndexedSignature
     ) where
 
-{- |
-Module      : Keri.KeyState.Verify
-Description : Signature and threshold verification
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Verifies indexed signatures against a set of public
-keys and a signing threshold.
--}
+-- \|
+-- Module      : Keri.KeyState.Verify
+-- Description : Signature and threshold verification
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Verifies indexed signatures against a set of public
+-- keys and a signing threshold.
 
 import Data.ByteString (ByteString)
 import Data.Text (Text)

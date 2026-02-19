@@ -12,16 +12,15 @@ module Keri.Event
     , eventSequenceNumber
     ) where
 
-{- |
-Module      : Keri.Event
-Description : KERI event types
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Defines the core event sum type and data records for
-each KERI event kind: inception, rotation, interaction,
-and receipt.
--}
+-- \|
+-- Module      : Keri.Event
+-- Description : KERI event types
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Defines the core event sum type and data records for
+-- each KERI event kind: inception, rotation, interaction,
+-- and receipt.
 
 import Data.Aeson (Value)
 import Data.Text (Text)
@@ -117,27 +116,27 @@ eventType = \case
 -- | Extract the SAID digest from an event.
 eventDigest :: Event -> Text
 eventDigest = \case
-    Inception d -> digest (d :: InceptionData)
-    Rotation d -> digest (d :: RotationData)
-    Interaction d -> digest (d :: InteractionData)
-    Receipt d -> digest (d :: ReceiptData)
+    Inception InceptionData{digest} -> digest
+    Rotation RotationData{digest} -> digest
+    Interaction InteractionData{digest} -> digest
+    Receipt ReceiptData{digest} -> digest
 
 -- | Extract the prefix from an event.
 eventPrefix :: Event -> Text
 eventPrefix = \case
-    Inception d -> prefix (d :: InceptionData)
-    Rotation d -> prefix (d :: RotationData)
-    Interaction d -> prefix (d :: InteractionData)
-    Receipt d -> prefix (d :: ReceiptData)
+    Inception InceptionData{prefix} -> prefix
+    Rotation RotationData{prefix} -> prefix
+    Interaction InteractionData{prefix} -> prefix
+    Receipt ReceiptData{prefix} -> prefix
 
 -- | Extract the sequence number from an event.
 eventSequenceNumber :: Event -> Int
 eventSequenceNumber = \case
-    Inception d ->
-        sequenceNumber (d :: InceptionData)
-    Rotation d ->
-        sequenceNumber (d :: RotationData)
-    Interaction d ->
-        sequenceNumber (d :: InteractionData)
-    Receipt d ->
-        sequenceNumber (d :: ReceiptData)
+    Inception InceptionData{sequenceNumber} ->
+        sequenceNumber
+    Rotation RotationData{sequenceNumber} ->
+        sequenceNumber
+    Interaction InteractionData{sequenceNumber} ->
+        sequenceNumber
+    Receipt ReceiptData{sequenceNumber} ->
+        sequenceNumber

@@ -3,15 +3,14 @@ module Keri.Event.Receipt
     , mkReceipt
     ) where
 
-{- |
-Module      : Keri.Event.Receipt
-Description : Receipt event construction
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Constructs receipt events for direct-mode
-acknowledgement of key events.
--}
+-- \|
+-- Module      : Keri.Event.Receipt
+-- Description : Receipt event construction
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Constructs receipt events for direct-mode
+-- acknowledgement of key events.
 
 import Data.ByteString qualified as BS
 import Data.Text (Text)
@@ -31,8 +30,8 @@ import Keri.Event.Version
 
 -- | Configuration for creating a receipt event.
 data ReceiptConfig = ReceiptConfig
-    { prefix :: Text
-    , sequenceNumber :: Int
+    { rctPrefix :: Text
+    , rctSequenceNumber :: Int
     }
     deriving stock (Show, Eq)
 
@@ -40,17 +39,14 @@ data ReceiptConfig = ReceiptConfig
 string size and SAID automatically.
 -}
 mkReceipt :: ReceiptConfig -> Event
-mkReceipt cfg = Receipt finalData
+mkReceipt ReceiptConfig{..} = Receipt finalData
   where
     placeholder =
         ReceiptData
             { version = versionPlaceholder
             , digest = saidPlaceholder
-            , prefix =
-                prefix (cfg :: ReceiptConfig)
-            , sequenceNumber =
-                sequenceNumber
-                    (cfg :: ReceiptConfig)
+            , prefix = rctPrefix
+            , sequenceNumber = rctSequenceNumber
             }
     size0 =
         BS.length $

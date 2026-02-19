@@ -4,15 +4,11 @@
   inputs = {
     haskellNix.url = "github:input-output-hk/haskell.nix";
     nixpkgs.follows = "haskellNix/nixpkgs-unstable";
-    flake-utils.url =
-      "github:hamishmack/flake-utils/hkm/nested-hydraJobs";
+    flake-utils.url = "github:hamishmack/flake-utils/hkm/nested-hydraJobs";
   };
 
-  outputs =
-    inputs@{ self, nixpkgs, flake-utils, haskellNix, ... }:
-    flake-utils.lib.eachSystem
-    [ "x86_64-linux" "aarch64-darwin" ]
-    (system:
+  outputs = inputs@{ self, nixpkgs, flake-utils, haskellNix, ... }:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-darwin" ] (system:
       let
         pkgs = import nixpkgs {
           overlays = [ haskellNix.overlay ];
@@ -22,8 +18,7 @@
       in {
         packages = project.packages // {
           default = project.packages."keri-hs:lib:keri-hs";
-          unit-tests =
-            project.packages."keri-hs:test:unit-tests";
+          unit-tests = project.packages."keri-hs:test:unit-tests";
         };
         inherit (project) devShells;
       });

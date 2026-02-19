@@ -1,15 +1,14 @@
 module Main (main) where
 
-{- |
-Module      : Main
-Description : Two-party direct-mode KERI demo
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-TCP-based demo of direct-mode KERI: two parties
-exchange KELs and return signed receipts.
-Uses length-prefixed JSON framing over TCP.
--}
+-- \|
+-- Module      : Main
+-- Description : Two-party direct-mode KERI demo
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- TCP-based demo of direct-mode KERI: two parties
+-- exchange KELs and return signed receipts.
+-- Uses length-prefixed JSON framing over TCP.
 
 import Control.Concurrent.Async (concurrently_)
 import Data.ByteString (ByteString)
@@ -24,10 +23,7 @@ import Keri.Cesr.DerivationCode
 import Keri.Cesr.Encode qualified as Cesr
 import Keri.Cesr.Primitive (Primitive (..))
 import Keri.Crypto.Ed25519 qualified as Ed
-import Keri.Event
-    ( Event (..)
-    , eventPrefix
-    )
+import Keri.Event (eventPrefix)
 import Keri.Event.Inception
     ( InceptionConfig (..)
     , mkInception
@@ -97,12 +93,12 @@ createIdentity = do
             commitKey nextPubCesr
     let cfg =
             InceptionConfig
-                { keys = [pubCesr]
-                , signingThreshold = 1
-                , nextKeys = [nextCommit]
-                , nextThreshold = 1
-                , config = []
-                , anchors = []
+                { icKeys = [pubCesr]
+                , icSigningThreshold = 1
+                , icNextKeys = [nextCommit]
+                , icNextThreshold = 1
+                , icConfig = []
+                , icAnchors = []
                 }
         evt = mkInception cfg
         msgBytes =
@@ -184,7 +180,7 @@ recvExact
     :: TCP.Socket
     -> Int
     -> IO ByteString
-recvExact sock n = go BS.empty n
+recvExact sock = go BS.empty
   where
     go acc 0 = pure acc
     go acc remaining = do

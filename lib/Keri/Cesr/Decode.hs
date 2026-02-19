@@ -2,17 +2,16 @@ module Keri.Cesr.Decode
     ( decode
     ) where
 
-{- |
-Module      : Keri.Cesr.Decode
-Description : Base64url text to CESR primitive
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Decodes a CESR-encoded text string back into a
-'Primitive'. Identifies the code from the prefix,
-reconstructs the zero-pad, Base64url-decodes, and
-strips the padding to recover raw bytes.
--}
+-- \|
+-- Module      : Keri.Cesr.Decode
+-- Description : Base64url text to CESR primitive
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Decodes a CESR-encoded text string back into a
+-- 'Primitive'. Identifies the code from the prefix,
+-- reconstructs the zero-pad, Base64url-decodes, and
+-- strips the padding to recover raw bytes.
 
 import Data.ByteString qualified as BS
 import Data.ByteString.Base64.URL qualified as B64

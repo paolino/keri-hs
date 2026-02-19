@@ -3,16 +3,15 @@ module Keri.Event.Serialize
     , encodeEvent
     ) where
 
-{- |
-Module      : Keri.Event.Serialize
-Description : Canonical JSON serialization
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Serializes KERI events to deterministic JSON with
-protocol-defined field ordering using aeson's
-'Encoding' builder.
--}
+-- \|
+-- Module      : Keri.Event.Serialize
+-- Description : Canonical JSON serialization
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Serializes KERI events to deterministic JSON with
+-- protocol-defined field ordering using aeson's
+-- 'Encoding' builder.
 
 import Data.Aeson.Encoding
     ( Encoding
@@ -32,7 +31,6 @@ import Keri.Event
     , InteractionData (..)
     , ReceiptData (..)
     , RotationData (..)
-    , eventTypeText
     )
 import Numeric (showHex)
 

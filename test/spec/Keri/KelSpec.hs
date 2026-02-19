@@ -9,7 +9,6 @@ import Keri.Crypto.Ed25519 qualified as Ed
 import Keri.Event
 import Keri.Event.Inception
 import Keri.Event.Interaction
-import Keri.Event.Rotation
 import Keri.Event.Serialize (serializeEvent)
 import Keri.Kel
 import Keri.Kel.Append qualified as Kel
@@ -94,12 +93,12 @@ mkSignedInception = do
             commitKey nextPubCesr
     let cfg =
             InceptionConfig
-                { keys = [pubCesr]
-                , signingThreshold = 1
-                , nextKeys = [nextCommit]
-                , nextThreshold = 1
-                , config = []
-                , anchors = []
+                { icKeys = [pubCesr]
+                , icSigningThreshold = 1
+                , icNextKeys = [nextCommit]
+                , icNextThreshold = 1
+                , icConfig = []
+                , icAnchors = []
                 }
         evt = mkInception cfg
         msgBytes = serializeEvent evt
@@ -121,11 +120,11 @@ mkKelWithInteraction = do
             let icp = event se
                 ixnCfg =
                     InteractionConfig
-                        { prefix = eventPrefix icp
-                        , sequenceNumber = 1
-                        , priorDigest =
+                        { ixPrefix = eventPrefix icp
+                        , ixSequenceNumber = 1
+                        , ixPriorDigest =
                             eventDigest icp
-                        , anchors = []
+                        , ixAnchors = []
                         }
                 ixnEvt = mkInteraction ixnCfg
                 ixnBytes = serializeEvent ixnEvt

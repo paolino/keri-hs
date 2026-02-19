@@ -2,18 +2,17 @@ module Keri.Kel.Replay
     ( replay
     ) where
 
-{- |
-Module      : Keri.Kel.Replay
-Description : Replay a KEL to derive key state
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
+-- \|
+-- Module      : Keri.Kel.Replay
+-- Description : Replay a KEL to derive key state
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Replays all events in a KEL to compute the current
+-- key state. Does not re-verify signatures (that is
+-- done during append).
 
-Replays all events in a KEL to compute the current
-key state. Does not re-verify signatures (that is
-done during append).
--}
-
-import Keri.Event (Event (..), InceptionData)
+import Keri.Event (Event (..))
 import Keri.Kel (Kel (..), SignedEvent (..))
 import Keri.KeyState (KeyState, applyEvent, initialState)
 

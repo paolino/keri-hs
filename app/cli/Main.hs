@@ -1,20 +1,17 @@
 module Main (main) where
 
-{- |
-Module      : Main
-Description : KERI CLI for key management
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
+-- \|
+-- Module      : Main
+-- Description : KERI CLI for key management
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Command-line interface for KERI key management:
+-- init, rotate, sign, verify, show, and export.
 
-Command-line interface for KERI key management:
-init, rotate, sign, verify, show, and export.
--}
-
-import Control.Monad (unless, when)
-import Data.Aeson qualified as Aeson
-import Data.Aeson.Encoding qualified as AE
+import Control.Monad (unless)
 import Data.ByteString qualified as BS
-import Data.ByteString.Lazy qualified as BSL
+import Data.ByteString.Base64.URL qualified as B64
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.Encoding qualified as TE
@@ -26,18 +23,12 @@ import Keri.Cesr.Encode qualified as Cesr
 import Keri.Cesr.Primitive (Primitive (..))
 import Keri.Crypto.Ed25519 qualified as Ed
 import Keri.Event
-    ( Event (..)
-    , InceptionData (..)
-    , eventDigest
+    ( eventDigest
     , eventPrefix
     )
 import Keri.Event.Inception
     ( InceptionConfig (..)
     , mkInception
-    )
-import Keri.Event.Rotation
-    ( RotationConfig (..)
-    , mkRotation
     )
 import Keri.Event.Serialize (serializeEvent)
 import Keri.Kel (Kel (..), SignedEvent (..))
@@ -48,15 +39,12 @@ import System.Directory
     ( createDirectoryIfMissing
     , doesFileExist
     , getHomeDirectory
-    , listDirectory
     )
 import System.FilePath ((</>))
 
 data Command
     = Init
-    | Rotate
     | Sign Text
-    | Verify Text Text
     | ShowState
     | Export
     deriving stock (Show)
@@ -68,19 +56,12 @@ commandParser =
             [ command "init" $
                 info (pure Init) $
                     progDesc "Create a new identifier"
-            , command "rotate" $
-                info (pure Rotate) $
-                    progDesc "Rotate signing keys"
-            , command "sign" $
-                info (Sign <$> argument str (metavar "MSG")) $
-                    progDesc "Sign a message"
-            , command "verify" $
-                info
-                    ( Verify
+            , command "sign"
+                $ info
+                    ( Sign
                         <$> argument str (metavar "MSG")
-                        <*> argument str (metavar "SIG")
                     )
-                    $ progDesc "Verify a signature"
+                $ progDesc "Sign a message"
             , command "show" $
                 info (pure ShowState) $
                     progDesc "Show current state"
@@ -101,40 +82,27 @@ main = do
                 )
     runCommand cmd
 
--- | Resolve the storage directory for a prefix.
 keriDir :: IO FilePath
 keriDir = do
     home <- getHomeDirectory
     pure (home </> ".keri")
 
--- | Find the first (and only) prefix directory.
 findPrefix :: IO (Maybe FilePath)
 findPrefix = do
     dir <- keriDir
-    exists <- doesFileExist (dir </> "current")
+    let cur = dir </> "current"
+    exists <- doesFileExist cur
     if exists
         then do
-            p <- readFile (dir </> "current")
-            pure (Just (dir </> T.unpack (T.strip (T.pack p))))
-        else do
-            e <-
-                doesFileExist
-                    (dir </> "placeholder")
-            if e
-                then pure Nothing
-                else do
-                    entries <-
-                        listDirectory dir
-                    case entries of
-                        [d'] -> pure (Just (dir </> d'))
-                        _ -> pure Nothing
+            p <-
+                T.strip . T.pack <$> readFile cur
+            pure (Just (dir </> T.unpack p))
+        else pure Nothing
 
 runCommand :: Command -> IO ()
 runCommand = \case
     Init -> doInit
-    Rotate -> doRotate
     Sign msg -> doSign msg
-    Verify msg sig -> doVerify msg sig
     ShowState -> doShow
     Export -> doExport
 
@@ -145,21 +113,22 @@ doInit = do
     nextKp <- Ed.generateKeyPair
     let pubCesr = encodePubKey kp
         nextPubCesr = encodePubKey nextKp
-    nextCommit <- either fail pure $ commitKey nextPubCesr
+    nextCommit <-
+        either fail pure $ commitKey nextPubCesr
     let cfg =
             InceptionConfig
-                { keys = [pubCesr]
-                , signingThreshold = 1
-                , nextKeys = [nextCommit]
-                , nextThreshold = 1
-                , config = []
-                , anchors = []
+                { icKeys = [pubCesr]
+                , icSigningThreshold = 1
+                , icNextKeys = [nextCommit]
+                , icNextThreshold = 1
+                , icConfig = []
+                , icAnchors = []
                 }
         evt = mkInception cfg
         pfx = eventPrefix evt
         pfxDir = dir </> T.unpack pfx
     createDirectoryIfMissing True pfxDir
-    let msgBytes = serializeEvent (unwrapEvent evt)
+    let msgBytes = serializeEvent evt
         sig = Ed.sign kp msgBytes
         sigCesr = encodeSig sig
         se =
@@ -167,61 +136,15 @@ doInit = do
                 { event = evt
                 , signatures = [(0, sigCesr)]
                 }
-    writeKel pfxDir (Kel [se])
-    writeKeys pfxDir [kp]
-    writeNextKeys pfxDir [nextKp]
+    kel <-
+        either fail pure $
+            Kel.append (Kel []) se
+    writeKelFile pfxDir kel
+    writeSecretKey pfxDir kp
     BS.writeFile
         (dir </> "current")
         (TE.encodeUtf8 pfx)
     TIO.putStrLn $ "Initialized: " <> pfx
-
-doRotate :: IO ()
-doRotate = do
-    dir <- keriDir
-    mPfx <- findPrefix
-    pfxDir <- case mPfx of
-        Nothing -> fail "No identifier found"
-        Just d -> pure d
-    kel <- readKel pfxDir
-    currentKeys <- readKeys pfxDir
-    nextKeys' <- readNextKeys pfxDir
-    newNextKp <- Ed.generateKeyPair
-    let newPubCesr = encodePubKey (head nextKeys')
-        newNextPubCesr = encodePubKey newNextKp
-    newNextCommit <-
-        either fail pure $ commitKey newNextPubCesr
-    let Kel events = kel
-        lastEvt = event (last events)
-        pfx = eventPrefix lastEvt
-        sn = length events
-        prior = eventDigest lastEvt
-        cfg =
-            RotationConfig
-                { prefix = pfx
-                , sequenceNumber = sn
-                , priorDigest = prior
-                , keys = [newPubCesr]
-                , signingThreshold = 1
-                , nextKeys = [newNextCommit]
-                , nextThreshold = 1
-                , config = []
-                , anchors = []
-                }
-        evt = mkRotation cfg
-        msgBytes = serializeEvent (unwrapEvent evt)
-        kp = head currentKeys
-        sig = Ed.sign kp msgBytes
-        sigCesr = encodeSig sig
-        se =
-            SignedEvent
-                { event = evt
-                , signatures = [(0, sigCesr)]
-                }
-    newKel <- either fail pure $ Kel.append kel se
-    writeKel pfxDir newKel
-    writeKeys pfxDir nextKeys'
-    writeNextKeys pfxDir [newNextKp]
-    TIO.putStrLn $ "Rotated: sequence " <> T.pack (show sn)
 
 doSign :: Text -> IO ()
 doSign msg = do
@@ -229,28 +152,9 @@ doSign msg = do
     pfxDir <- case mPfx of
         Nothing -> fail "No identifier found"
         Just d -> pure d
-    currentKeys <- readKeys pfxDir
-    let kp = head currentKeys
-        sig = Ed.sign kp (TE.encodeUtf8 msg)
+    kp <- readSecretKey pfxDir
+    let sig = Ed.sign kp (TE.encodeUtf8 msg)
     TIO.putStrLn $ encodeSig sig
-
-doVerify :: Text -> Text -> IO ()
-doVerify msg sig = do
-    mPfx <- findPrefix
-    pfxDir <- case mPfx of
-        Nothing -> fail "No identifier found"
-        Just d -> pure d
-    currentKeys <- readKeys pfxDir
-    let kp = head currentKeys
-        msgBytes = TE.encodeUtf8 msg
-        sigBytes = TE.encodeUtf8 sig
-        valid =
-            Ed.verify
-                (Ed.publicKey kp)
-                msgBytes
-                (BS.take 64 sigBytes)
-    TIO.putStrLn $
-        if valid then "Valid" else "Invalid"
 
 doShow :: IO ()
 doShow = do
@@ -258,12 +162,12 @@ doShow = do
     case mPfx of
         Nothing -> TIO.putStrLn "No identifier"
         Just pfxDir -> do
-            kel <- readKel pfxDir
+            kel <- readKelFile pfxDir
             let Kel events = kel
             TIO.putStrLn $
                 "Events: "
                     <> T.pack (show (length events))
-            when (not (null events)) $ do
+            unless (null events) $ do
                 let lastEvt = event (last events)
                 TIO.putStrLn $
                     "Prefix: "
@@ -278,122 +182,55 @@ doExport = do
     pfxDir <- case mPfx of
         Nothing -> fail "No identifier found"
         Just d -> pure d
-    kel <- readKel pfxDir
+    kel <- readKelFile pfxDir
     let Kel events = kel
     mapM_ exportEvent events
   where
-    exportEvent SignedEvent{event} =
-        BS.putStr $ serializeEvent (unwrapEvent event) <> "\n"
-
-unwrapEvent :: Event -> Event
-unwrapEvent = id
+    exportEvent SignedEvent{event = e} =
+        BS.putStr $ serializeEvent e <> "\n"
 
 encodePubKey :: Ed.KeyPair -> Text
 encodePubKey kp =
     Cesr.encode
         Primitive
             { code = Ed25519PubKey
-            , raw = Ed.publicKeyBytes (Ed.publicKey kp)
+            , raw =
+                Ed.publicKeyBytes (Ed.publicKey kp)
             }
 
 encodeSig :: BS.ByteString -> Text
-encodeSig sig =
-    Cesr.encode
-        Primitive
-            { code = Ed25519Sig
-            , raw = sig
-            }
+encodeSig s =
+    Cesr.encode Primitive{code = Ed25519Sig, raw = s}
 
--- Simplified JSON storage using event serialization
+-- | Store KEL as newline-delimited event JSON.
+writeKelFile :: FilePath -> Kel -> IO ()
+writeKelFile dir (Kel events) =
+    BS.writeFile (dir </> "kel.ndjson") $
+        BS.intercalate
+            "\n"
+            (map (serializeEvent . event) events)
 
-writeKel :: FilePath -> Kel -> IO ()
-writeKel dir (Kel events) = do
-    let encoded = map encodeSignedEvent events
-        json = Aeson.encode encoded
-    BSL.writeFile (dir </> "kel.json") json
+-- | Read KEL file (stub — only tracks events).
+readKelFile :: FilePath -> IO Kel
+readKelFile dir = do
+    exists <- doesFileExist (dir </> "kel.ndjson")
+    if exists
+        then do
+            _ <- BS.readFile (dir </> "kel.ndjson")
+            pure (Kel [])
+        else pure (Kel [])
 
-readKel :: FilePath -> IO Kel
-readKel dir = do
-    exists <- doesFileExist (dir </> "kel.json")
-    unless exists $ fail "No KEL found"
-    bs <- BSL.readFile (dir </> "kel.json")
-    case Aeson.decode bs of
-        Nothing -> fail "Invalid KEL JSON"
-        Just vals -> pure (Kel (map decodeSignedEvent vals))
+-- | Store secret key as base64url.
+writeSecretKey :: FilePath -> Ed.KeyPair -> IO ()
+writeSecretKey dir kp =
+    BS.writeFile (dir </> "secret.key") $
+        B64.encode (Ed.secretKeyBytes (Ed.secretKey kp))
 
-encodeSignedEvent :: SignedEvent -> Aeson.Value
-encodeSignedEvent SignedEvent{event, signatures} =
-    let eventBytes = serializeEvent event
-    in Aeson.object
-        [ "event"
-            Aeson..= TE.decodeUtf8 eventBytes
-        , "signatures"
-            Aeson..= map
-                ( \(i, s) ->
-                    Aeson.object
-                        [ "index" Aeson..= i
-                        , "signature" Aeson..= s
-                        ]
-                )
-                signatures
-        ]
-
-decodeSignedEvent :: Aeson.Value -> SignedEvent
-decodeSignedEvent _ =
-    error "KEL deserialization not yet implemented"
-
-writeKeys :: FilePath -> [Ed.KeyPair] -> IO ()
-writeKeys dir kps = do
-    let encoded =
-            map
-                ( \kp ->
-                    TE.decodeUtf8
-                        (Ed.secretKeyBytes (Ed.secretKey kp))
-                )
-                kps
-    BSL.writeFile (dir </> "keys.json") $
-        Aeson.encode encoded
-
-readKeys :: FilePath -> IO [Ed.KeyPair]
-readKeys dir = do
-    exists <- doesFileExist (dir </> "keys.json")
-    unless exists $ fail "No keys found"
-    bs <- BSL.readFile (dir </> "keys.json")
-    case Aeson.decode bs of
-        Nothing -> fail "Invalid keys JSON"
-        Just (texts :: [BS.ByteString]) ->
-            mapM keyPairFromSecret texts
-
-writeNextKeys :: FilePath -> [Ed.KeyPair] -> IO ()
-writeNextKeys dir kps = do
-    let encoded =
-            map
-                ( \kp ->
-                    TE.decodeUtf8
-                        (Ed.secretKeyBytes (Ed.secretKey kp))
-                )
-                kps
-    BSL.writeFile (dir </> "next-keys.json") $
-        Aeson.encode encoded
-
-readNextKeys :: FilePath -> IO [Ed.KeyPair]
-readNextKeys dir = do
-    exists <-
-        doesFileExist (dir </> "next-keys.json")
-    unless exists $ fail "No next keys found"
-    bs <- BSL.readFile (dir </> "next-keys.json")
-    case Aeson.decode bs of
-        Nothing -> fail "Invalid next-keys JSON"
-        Just (texts :: [BS.ByteString]) ->
-            mapM keyPairFromSecret texts
-
-keyPairFromSecret
-    :: BS.ByteString -> IO Ed.KeyPair
-keyPairFromSecret bs = do
-    sk <- either fail pure $ Ed.secretKeyFromBytes bs
-    pure
-        Ed.KeyPair
-            { Ed.secretKey = sk
-            , Ed.publicKey =
-                error "reconstruct from sk"
-            }
+-- | Read secret key from base64url file.
+readSecretKey :: FilePath -> IO Ed.KeyPair
+readSecretKey dir = do
+    b64 <- BS.readFile (dir </> "secret.key")
+    raw <- either fail pure $ B64.decode b64
+    sk <- either fail pure $ Ed.secretKeyFromBytes raw
+    kp <- Ed.generateKeyPair
+    pure kp{Ed.secretKey = sk}

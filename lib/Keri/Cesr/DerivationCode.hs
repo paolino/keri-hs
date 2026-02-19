@@ -7,16 +7,15 @@ module Keri.Cesr.DerivationCode
     , identifyCode
     ) where
 
-{- |
-Module      : Keri.Cesr.DerivationCode
-Description : CESR derivation code table
-Copyright   : (c) 2026 Cardano Foundation
-License     : Apache-2.0
-
-Defines the CESR code table for cryptographic primitives
-used in KERI. Each code identifies the type and size of
-the attached cryptographic material.
--}
+-- \|
+-- Module      : Keri.Cesr.DerivationCode
+-- Description : CESR derivation code table
+-- Copyright   : (c) 2026 Cardano Foundation
+-- License     : Apache-2.0
+--
+-- Defines the CESR code table for cryptographic primitives
+-- used in KERI. Each code identifies the type and size of
+-- the attached cryptographic material.
 
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -58,7 +57,7 @@ characters. Equals @(codeLength + rawSize) * 4 / 3@.
 totalLength :: DerivationCode -> Int
 totalLength c =
     let padded = codeLength c + rawSize c
-    in (padded * 4) `div` 3
+    in  (padded * 4) `div` 3
 
 {- | Identify the derivation code from a CESR-encoded
 text prefix.
