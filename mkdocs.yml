@@ -1,0 +1,23 @@
+site_name: keri-hs
+site_description: KERI (Key Event Receipt Infrastructure) library for Haskell
+repo_url: https://github.com/paolino/keri-hs
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: blue
+    accent: light blue
+  features:
+    - navigation.sections
+    - content.code.copy
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+nav:
+  - Home: index.md
+  - KERI Protocol: keri-protocol.md
+  - CLI Reference: cli.md
+  - Architecture: architecture.md

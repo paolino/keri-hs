@@ -19,6 +19,8 @@
         packages = project.packages // {
           default = project.packages."keri-hs:lib:keri-hs";
           unit-tests = project.packages."keri-hs:test:unit-tests";
+          keri-cli = project.packages."keri-hs:exe:keri-cli";
+          keri-demo = project.packages."keri-hs:exe:keri-demo";
         };
         inherit (project) devShells;
       });
