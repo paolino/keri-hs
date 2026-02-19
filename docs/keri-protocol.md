@@ -417,15 +417,23 @@ flowchart LR
 | Long-term key management | No | Partial | Yes |
 | Infrastructure cost | None | High (gas) | Low (witnesses) |
 
-| Method | Decentralization | Key Management |
-|--------|:----------------:|:--------------:|
-| Traditional PKI | Low | Basic |
-| did:web | Low | Basic |
-| did:key | High | Minimal |
-| did:peer | High | Basic |
-| did:ethr | Medium | Medium |
-| did:ion | Medium | Medium |
-| **KERI** | **High** | **Advanced** |
+```mermaid
+quadrantChart
+    title Identity Architectures: Decentralization vs Key Management Power
+    x-axis Centralized --> Fully Decentralized
+    y-axis Basic Key Mgmt --> Advanced Key Mgmt
+    quadrant-1 Ideal
+    quadrant-2 Powerful but Centralized
+    quadrant-3 Simple but Limited
+    quadrant-4 Decentralized but Limited
+    Traditional PKI: [0.10, 0.30]
+    did-web: [0.20, 0.25]
+    did-key: [0.85, 0.10]
+    did-ethr: [0.60, 0.50]
+    did-ion: [0.65, 0.55]
+    did-peer: [0.80, 0.20]
+    KERI: [0.88, 0.92]
+```
 
 ---
 
