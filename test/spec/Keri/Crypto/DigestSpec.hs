@@ -19,9 +19,9 @@ spec = do
             let said = computeSaid "test bytes"
             T.length said `shouldBe` 44
 
-        it "starts with E (digest code)" $ do
+        it "starts with F (digest code)" $ do
             let said = computeSaid "test bytes"
-            T.take 1 said `shouldBe` "E"
+            T.take 1 said `shouldBe` "F"
 
         it "is deterministic" $ do
             let s1 = computeSaid "same input"

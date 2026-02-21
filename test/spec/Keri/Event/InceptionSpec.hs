@@ -63,7 +63,7 @@ spec = do
                 said = eventDigest evt
             T.all (== '#') said `shouldBe` False
 
-        it "SAID starts with E (digest code)" $ do
+        it "SAID starts with F (digest code)" $ do
             let cfg =
                     InceptionConfig
                         { icKeys = ["Dkey123"]
@@ -75,7 +75,7 @@ spec = do
                         }
                 evt = mkInception cfg
             T.take 1 (eventDigest evt)
-                `shouldBe` "E"
+                `shouldBe` "F"
 
         it "version has correct size" $ do
             let cfg =
