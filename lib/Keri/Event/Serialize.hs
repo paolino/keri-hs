@@ -113,8 +113,8 @@ encodeRotation
                 , pair "nt" (text $ toStr nextThreshold)
                 , pair "n" (list text nextKeys)
                 , pair "bt" (text $ toStr witnessThreshold)
-                , pair "br" (list text witnessesRemoved)
                 , pair "ba" (list text witnessesAdded)
+                , pair "br" (list text witnessesRemoved)
                 , pair "c" (list text config)
                 , pair "a" (list value anchors)
                 ]

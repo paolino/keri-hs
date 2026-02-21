@@ -93,5 +93,5 @@ Signatures and identifiers use CESR (Composable Event Streaming Representation) 
 | Code | Type | Length |
 |------|------|--------|
 | `D` | Ed25519 public key | 44 chars |
-| `E` | Blake2b-256 digest | 44 chars |
+| `F` | Blake2b-256 digest | 44 chars |
 | `0B` | Ed25519 signature | 88 chars |

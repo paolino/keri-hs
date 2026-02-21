@@ -8,8 +8,8 @@ spec = do
     describe "codeText" $ do
         it "Ed25519PubKey is D" $
             codeText Ed25519PubKey `shouldBe` "D"
-        it "Blake2bDigest is E" $
-            codeText Blake2bDigest `shouldBe` "E"
+        it "Blake2bDigest is F" $
+            codeText Blake2bDigest `shouldBe` "F"
         it "Ed25519Sig is 0B" $
             codeText Ed25519Sig `shouldBe` "0B"
 
@@ -41,8 +41,8 @@ spec = do
         it "identifies D as Ed25519PubKey" $
             identifyCode "Dxyz..."
                 `shouldBe` Right Ed25519PubKey
-        it "identifies E as Blake2bDigest" $
-            identifyCode "Exyz..."
+        it "identifies F as Blake2bDigest" $
+            identifyCode "Fxyz..."
                 `shouldBe` Right Blake2bDigest
         it "identifies 0B as Ed25519Sig" $
             identifyCode "0Bxyz..."

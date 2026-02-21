@@ -35,11 +35,11 @@ spec = do
             T.take 2 (encode prim)
                 `shouldBe` "0B"
 
-        it "encodes a digest with code E" $ do
+        it "encodes a digest with code F" $ do
             let raw = BS.replicate 32 0
                 prim = Primitive Blake2bDigest raw
             T.take 1 (encode prim)
-                `shouldBe` "E"
+                `shouldBe` "F"
 
         it "matches keripy test vector for Ed25519" $
             do
@@ -88,7 +88,7 @@ spec = do
 
     describe "cesr-test-vectors" $ do
         -- Vectors from WebOfTrust/cesr-test-vectors
-        -- Same 32-byte raw value encoded with D/E
+        -- Same 32-byte raw value encoded with D/F
         let raw32 :: ByteString
             raw32 =
                 BS.pack
@@ -130,9 +130,9 @@ spec = do
             encode (Primitive Ed25519PubKey raw32)
                 `shouldBe` "DF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
 
-        it "code E (Blake3/2b digest)" $
+        it "code F (Blake2b-256 digest)" $
             encode (Primitive Blake2bDigest raw32)
-                `shouldBe` "EF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
+                `shouldBe` "FF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
 
         it "code 0B (Ed25519 signature)" $ do
             let raw64 :: ByteString

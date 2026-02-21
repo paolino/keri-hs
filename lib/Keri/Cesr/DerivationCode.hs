@@ -24,7 +24,7 @@ import Data.Text qualified as T
 data DerivationCode
     = -- | Ed25519 public key (code @D@, 32 bytes)
       Ed25519PubKey
-    | -- | Blake2b-256 digest (code @E@, 32 bytes)
+    | -- | Blake2b-256 digest (code @F@, 32 bytes)
       Blake2bDigest
     | -- | Ed25519 signature (code @0B@, 64 bytes)
       Ed25519Sig
@@ -34,7 +34,7 @@ data DerivationCode
 codeText :: DerivationCode -> Text
 codeText = \case
     Ed25519PubKey -> "D"
-    Blake2bDigest -> "E"
+    Blake2bDigest -> "F"
     Ed25519Sig -> "0B"
 
 -- | Size of the raw cryptographic material in bytes.
@@ -67,7 +67,7 @@ identifyCode
 identifyCode txt
     | T.take 2 txt == "0B" = Right Ed25519Sig
     | T.take 1 txt == "D" = Right Ed25519PubKey
-    | T.take 1 txt == "E" = Right Blake2bDigest
+    | T.take 1 txt == "F" = Right Blake2bDigest
     | otherwise =
         Left $
             "Unknown CESR code: "

@@ -12,7 +12,7 @@ module Keri.Crypto.Blake3
 -- Provides a 256-bit hash function. Uses Blake2b-256 from
 -- @crypton@ as the backend. In a production KERI
 -- implementation this would use actual Blake3; the API and
--- CESR code (\"E\") remain identical.
+-- CESR code (\"F\") remain identical.
 
 import Crypto.Hash qualified as Hash
 import Data.ByteArray qualified as BA
