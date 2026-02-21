@@ -50,6 +50,7 @@ library
     Keri.Crypto.Blake3
     Keri.Crypto.Digest
     Keri.Crypto.Ed25519
+    Keri.Crypto.SAID
     Keri.Event
     Keri.Event.Inception
     Keri.Event.Interaction
@@ -114,6 +115,7 @@ test-suite unit-tests
     Keri.Crypto.Blake3Spec
     Keri.Crypto.DigestSpec
     Keri.Crypto.Ed25519Spec
+    Keri.Crypto.SAIDSpec
     Keri.Event.InceptionSpec
     Keri.Event.InteractionSpec
     Keri.Event.RotationSpec

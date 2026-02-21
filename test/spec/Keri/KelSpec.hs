@@ -28,6 +28,41 @@ spec = do
                 Right (Kel events) ->
                     length events `shouldBe` 1
 
+        it "rejects event with tampered SAID" $ do
+            (se, _, _) <- mkSignedInception
+            case Kel.append emptyKel se of
+                Left err ->
+                    expectationFailure err
+                Right kel -> do
+                    let icp = event se
+                        ixn =
+                            mkInteraction
+                                InteractionConfig
+                                    { ixPrefix =
+                                        eventPrefix icp
+                                    , ixSequenceNumber = 1
+                                    , ixPriorDigest =
+                                        eventDigest icp
+                                    , ixAnchors = []
+                                    }
+                        tampered = case ixn of
+                            Interaction
+                                InteractionData{..} ->
+                                    Interaction
+                                        InteractionData
+                                            { priorDigest =
+                                                "tampered"
+                                            , ..
+                                            }
+                            other -> other
+                        tamperedSe =
+                            SignedEvent
+                                { event = tampered
+                                , signatures = []
+                                }
+                    Kel.append kel tamperedSe
+                        `shouldSatisfy` isLeft
+
         it "rejects non-inception as first event" $
             do
                 let bad =
