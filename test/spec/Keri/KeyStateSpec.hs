@@ -10,6 +10,7 @@ import Keri.Event.Inception
 import Keri.Event.Rotation
 import Keri.KeyState
 import Keri.KeyState.PreRotation (commitKey)
+import Keri.KeyState.Verify (verifySignatures)
 import Test.Hspec
 
 spec :: Spec
@@ -90,6 +91,103 @@ spec = do
                         `shouldSatisfy` isLeft
                 _ ->
                     expectationFailure "not inception"
+
+        it "rejects wrong prefix" $ do
+            (_, evt) <- mkTestInception
+            case evt of
+                Inception d -> do
+                    let ks = initialState d
+                        bad =
+                            Interaction
+                                InteractionData
+                                    { version =
+                                        "KERI10JSON000000_"
+                                    , digest = "d"
+                                    , prefix =
+                                        "wrong-prefix"
+                                    , sequenceNumber =
+                                        stateSequenceNumber
+                                            ks
+                                            + 1
+                                    , priorDigest =
+                                        stateLastDigest ks
+                                    , anchors = []
+                                    }
+                    applyEvent ks bad
+                        `shouldSatisfy` isLeft
+                _ ->
+                    expectationFailure "not inception"
+
+        it "receipt does not change state" $ do
+            (_, evt) <- mkTestInception
+            case evt of
+                Inception d -> do
+                    let ks = initialState d
+                        rct =
+                            Receipt
+                                ReceiptData
+                                    { version = "v"
+                                    , digest = "d"
+                                    , prefix =
+                                        statePrefix ks
+                                    , sequenceNumber = 0
+                                    }
+                    applyEvent ks rct
+                        `shouldBe` Right ks
+                _ ->
+                    expectationFailure "not inception"
+
+        it "rotation with empty pre-rotation" $
+            do
+                kp <- Ed.generateKeyPair
+                let pubCesr = encodeKey kp
+                    cfg =
+                        InceptionConfig
+                            { icKeys = [pubCesr]
+                            , icSigningThreshold = 1
+                            , icNextKeys = []
+                            , icNextThreshold = 0
+                            , icConfig = []
+                            , icAnchors = []
+                            }
+                    evt = mkInception cfg
+                case evt of
+                    Inception d -> do
+                        let ks = initialState d
+                            rotCfg =
+                                RotationConfig
+                                    { rcPrefix =
+                                        statePrefix ks
+                                    , rcSequenceNumber =
+                                        stateSequenceNumber
+                                            ks
+                                            + 1
+                                    , rcPriorDigest =
+                                        stateLastDigest
+                                            ks
+                                    , rcKeys = []
+                                    , rcSigningThreshold =
+                                        0
+                                    , rcNextKeys = []
+                                    , rcNextThreshold = 0
+                                    , rcConfig = []
+                                    , rcAnchors = []
+                                    }
+                        case applyEvent
+                            ks
+                            (mkRotation rotCfg) of
+                            Left err ->
+                                expectationFailure
+                                    err
+                            Right _ -> pure ()
+                    _ ->
+                        expectationFailure
+                            "not inception"
+
+    describe "verifySignatures" $
+        it "threshold zero is always met" $
+            verifySignatures [] 0 "" []
+                `shouldBe` Right True
   where
     isLeft (Left _) = True
     isLeft _ = False
