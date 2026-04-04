@@ -75,7 +75,7 @@ spec = do
                         }
                 evt = mkInception cfg
             T.take 1 (eventDigest evt)
-                `shouldBe` "E"
+                `shouldBe` "F"
 
         it "version has correct size" $ do
             let cfg =
