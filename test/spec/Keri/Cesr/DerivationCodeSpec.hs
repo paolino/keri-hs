@@ -41,8 +41,8 @@ spec = do
         it "identifies D as Ed25519PubKey" $
             identifyCode "Dxyz..."
                 `shouldBe` Right Ed25519PubKey
-        it "identifies E as Blake2bDigest" $
-            identifyCode "Exyz..."
+        it "identifies F as Blake2bDigest" $
+            identifyCode "Fxyz..."
                 `shouldBe` Right Blake2bDigest
         it "identifies 0B as Ed25519Sig" $
             identifyCode "0Bxyz..."
