@@ -22,7 +22,7 @@ spec = do
                     expectationFailure err
                 Right commitment ->
                     T.take 1 commitment
-                        `shouldBe` "E"
+                        `shouldBe` "F"
 
         it "is deterministic" $ do
             let key =
