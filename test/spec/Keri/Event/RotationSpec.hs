@@ -56,7 +56,7 @@ spec = do
                 evt = mkRotation cfg
             eventDigest evt `shouldNotBe` "Eprefix"
 
-        it "SAID starts with E" $ do
+        it "SAID starts with F" $ do
             let cfg =
                     RotationConfig
                         { rcPrefix = "Eprefix"
