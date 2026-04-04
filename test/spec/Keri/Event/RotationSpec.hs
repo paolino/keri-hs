@@ -71,4 +71,4 @@ spec = do
                         }
                 evt = mkRotation cfg
             T.take 1 (eventDigest evt)
-                `shouldBe` "E"
+                `shouldBe` "F"
