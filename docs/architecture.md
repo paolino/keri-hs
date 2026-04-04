@@ -46,7 +46,7 @@ graph TD
 
 | Module | Description |
 |--------|-------------|
-| `Keri.Cesr.DerivationCode` | CESR code table: `D` (Ed25519 key), `E` (digest), `0B` (signature) |
+| `Keri.Cesr.DerivationCode` | CESR code table: `D` (Ed25519 key), `F` (Blake2b-256 digest), `0B` (signature) |
 | `Keri.Cesr.Primitive` | Qualified primitive: derivation code + raw bytes |
 | `Keri.Cesr.Encode` | Primitive to base64url text |
 | `Keri.Cesr.Decode` | Base64url text to primitive |
