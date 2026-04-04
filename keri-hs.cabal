@@ -114,6 +114,7 @@ test-suite unit-tests
     Keri.Crypto.Blake3Spec
     Keri.Crypto.DigestSpec
     Keri.Crypto.Ed25519Spec
+    Keri.Crypto.SAIDSpec
     Keri.Event.InceptionSpec
     Keri.Event.InteractionSpec
     Keri.Event.RotationSpec
