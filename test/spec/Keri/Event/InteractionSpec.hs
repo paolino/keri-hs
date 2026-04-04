@@ -30,7 +30,7 @@ spec = do
                 evt = mkInteraction cfg
             eventPrefix evt `shouldBe` "Eprefix"
 
-        it "SAID starts with E" $ do
+        it "SAID starts with F" $ do
             let cfg =
                     InteractionConfig
                         { ixPrefix = "Eprefix"
