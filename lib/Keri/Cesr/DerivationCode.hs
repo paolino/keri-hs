@@ -67,7 +67,7 @@ identifyCode
 identifyCode txt
     | T.take 2 txt == "0B" = Right Ed25519Sig
     | T.take 1 txt == "D" = Right Ed25519PubKey
-    | T.take 1 txt == "E" = Right Blake2bDigest
+    | T.take 1 txt == "F" = Right Blake2bDigest
     | otherwise =
         Left $
             "Unknown CESR code: "
