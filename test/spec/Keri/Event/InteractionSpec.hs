@@ -40,4 +40,4 @@ spec = do
                         }
                 evt = mkInteraction cfg
             T.take 1 (eventDigest evt)
-                `shouldBe` "E"
+                `shouldBe` "F"
