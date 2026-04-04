@@ -50,6 +50,7 @@ library
     Keri.Crypto.Blake3
     Keri.Crypto.Digest
     Keri.Crypto.Ed25519
+    Keri.Crypto.SAID
     Keri.Event
     Keri.Event.Inception
     Keri.Event.Interaction
