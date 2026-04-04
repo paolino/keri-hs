@@ -24,7 +24,7 @@ import Data.Text qualified as T
 data DerivationCode
     = -- | Ed25519 public key (code @D@, 32 bytes)
       Ed25519PubKey
-    | -- | Blake2b-256 digest (code @E@, 32 bytes)
+    | -- | Blake2b-256 digest (code @F@, 32 bytes)
       Blake2bDigest
     | -- | Ed25519 signature (code @0B@, 64 bytes)
       Ed25519Sig
