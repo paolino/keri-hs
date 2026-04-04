@@ -129,9 +129,9 @@ spec = do
                         `shouldBe` Ed25519PubKey
                     raw prim `shouldBe` raw32
 
-        it "decodes code E" $ do
+        it "decodes code F" $ do
             let qb64 =
-                    "EF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
+                    "FF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
             case decode qb64 of
                 Left err -> expectationFailure err
                 Right prim -> do
