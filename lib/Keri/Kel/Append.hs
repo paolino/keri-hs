@@ -9,8 +9,9 @@ module Keri.Kel.Append
 -- License     : Apache-2.0
 --
 -- Appends a signed event to a KEL after verifying
--- signatures and chain integrity.
+-- SAID integrity, signatures, and chain integrity.
 
+import Keri.Crypto.SAID (verifySaid)
 import Keri.Event
     ( Event (..)
     , eventSequenceNumber
@@ -24,8 +25,9 @@ import Keri.KeyState.Verify (verifySignatures)
 
 {- | Append a signed event to the KEL. Verifies:
 
-1. Signatures meet the current threshold
-2. Event is consistent with current key state
+1. SAID integrity (digest matches recomputed hash)
+2. Signatures meet the current threshold
+3. Event is consistent with current key state
 -}
 append
     :: Kel -> SignedEvent -> Either String Kel
@@ -39,44 +41,54 @@ appendInception
 appendInception se@SignedEvent{event, signatures} =
     case event of
         Inception d -> do
-            let msgBytes = serializeEvent event
-                ks = initialState d
-            verified <-
-                verifySignatures
-                    (KS.stateKeys ks)
-                    (KS.stateSigningThreshold ks)
-                    msgBytes
-                    signatures
-            if verified
-                then Right (Kel [se])
-                else Left "Inception signatures invalid"
+            if not (verifySaid event)
+                then Left "SAID verification failed"
+                else do
+                    let msgBytes = serializeEvent event
+                        ks = initialState d
+                    verified <-
+                        verifySignatures
+                            (KS.stateKeys ks)
+                            (KS.stateSigningThreshold ks)
+                            msgBytes
+                            signatures
+                    if verified
+                        then Right (Kel [se])
+                        else
+                            Left
+                                "Inception signatures invalid"
         _ ->
             Left "First event must be inception"
 
 appendToExisting
     :: Kel -> SignedEvent -> Either String Kel
 appendToExisting (Kel events) se@SignedEvent{..} = do
-    ks <- replay (Kel events)
-    let msgBytes = serializeEvent event
-    verified <-
-        verifySignatures
-            (KS.stateKeys ks)
-            (KS.stateSigningThreshold ks)
-            msgBytes
-            signatures
-    if not verified
-        then Left "Signatures invalid"
+    if not (verifySaid event)
+        then Left "SAID verification failed"
         else do
-            let expectedSn =
-                    KS.stateSequenceNumber ks + 1
-                actualSn = eventSequenceNumber event
-            if actualSn /= expectedSn
-                then
-                    Left $
-                        "Expected sequence "
-                            <> show expectedSn
-                            <> ", got "
-                            <> show actualSn
+            ks <- replay (Kel events)
+            let msgBytes = serializeEvent event
+            verified <-
+                verifySignatures
+                    (KS.stateKeys ks)
+                    (KS.stateSigningThreshold ks)
+                    msgBytes
+                    signatures
+            if not verified
+                then Left "Signatures invalid"
                 else do
-                    _ <- applyEvent ks event
-                    Right (Kel (events ++ [se]))
+                    let expectedSn =
+                            KS.stateSequenceNumber ks + 1
+                        actualSn =
+                            eventSequenceNumber event
+                    if actualSn /= expectedSn
+                        then
+                            Left $
+                                "Expected sequence "
+                                    <> show expectedSn
+                                    <> ", got "
+                                    <> show actualSn
+                        else do
+                            _ <- applyEvent ks event
+                            Right
+                                (Kel (events ++ [se]))
