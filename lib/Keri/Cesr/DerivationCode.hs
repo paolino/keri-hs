@@ -34,7 +34,7 @@ data DerivationCode
 codeText :: DerivationCode -> Text
 codeText = \case
     Ed25519PubKey -> "D"
-    Blake2bDigest -> "E"
+    Blake2bDigest -> "F"
     Ed25519Sig -> "0B"
 
 -- | Size of the raw cryptographic material in bytes.
