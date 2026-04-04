@@ -88,7 +88,7 @@ spec = do
 
     describe "cesr-test-vectors" $ do
         -- Vectors from WebOfTrust/cesr-test-vectors
-        -- Same 32-byte raw value encoded with D/E
+        -- Same 32-byte raw value encoded with D/F
         let raw32 :: ByteString
             raw32 =
                 BS.pack
