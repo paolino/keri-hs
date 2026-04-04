@@ -130,9 +130,9 @@ spec = do
             encode (Primitive Ed25519PubKey raw32)
                 `shouldBe` "DF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
 
-        it "code E (Blake3/2b digest)" $
+        it "code F (Blake2b-256 digest)" $
             encode (Primitive Blake2bDigest raw32)
-                `shouldBe` "EF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
+                `shouldBe` "FF-c2EWonat78N7jPabwpZbhiQXPwoUpFV-o0pQxnt_g"
 
         it "code 0B (Ed25519 signature)" $ do
             let raw64 :: ByteString
