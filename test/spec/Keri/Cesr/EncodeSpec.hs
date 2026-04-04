@@ -35,11 +35,11 @@ spec = do
             T.take 2 (encode prim)
                 `shouldBe` "0B"
 
-        it "encodes a digest with code E" $ do
+        it "encodes a digest with code F" $ do
             let raw = BS.replicate 32 0
                 prim = Primitive Blake2bDigest raw
             T.take 1 (encode prim)
-                `shouldBe` "E"
+                `shouldBe` "F"
 
         it "matches keripy test vector for Ed25519" $
             do
